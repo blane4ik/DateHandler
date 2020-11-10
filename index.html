@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      function addZeroHandler(param) {
+        if (param < 10) {
+          return `0${param}`;
+        } else {
+          return param;
+        }
+      }
+    
+      function getParsedDateFormat(date) {
+        const year = date.getFullYear();
+        const month = addZeroHandler(date.getMonth() + 1);
+        const day = addZeroHandler(date.getDate());
+        const hour = addZeroHandler(date.getHours());
+        const minutes = addZeroHandler(date.getMinutes());
+
+        return `${year}-${month}-${day} ${hour}:${minutes}`;
+      }
+
+      function date(dateString) {
+
+        const date = new Date(dateString);
+
+          const methodsHandler = {
+            getPrefix: 'get',
+            setPrefix: 'set',
+            years: 'FullYear',
+            months: 'Month',
+            days: 'Date',
+            hours: 'Hours',
+            minutes: 'Minutes'
+          }
+  
+          const dateHandler = {
+            value: date,
+  
+            add(amount, format) {
+              this._calculate(amount, format, 'add')
+              this._updateValue();
+              return dateHandler;
+            },
+
+            subtract(amount, format) {
+              this._calculate(amount, format, 'subtract')
+              this._updateValue();
+              return dateHandler;
+            },
+
+            _calculate(amount, format, type) {
+              const get = methodsHandler.getPrefix;
+              const set = methodsHandler.setPrefix;
+              const method = methodsHandler[format];
+              switch (type) {
+                case 'add':
+                  date[set + method](date[get + method]() + amount);
+                  break;
+
+                case 'subtract':
+                  date[set + method](date[get + method]() - amount);
+                  break;
+              }
+            },
+
+            _updateValue() {
+              this.value = getParsedDateFormat(date);
+            }
+          }
+
+          return dateHandler;
+      }
+
+      const time = date('2017-05-16 13:45').add(24, 'hours')
+                                           .subtract(1, 'months')
+                                           .add(1, 'days')
+                                           .add(15, 'minutes')
+                                           .add(5, 'years');
+
+      console.log(time.value);
+    </script>
+  </body>
+</html>
